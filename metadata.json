@@ -1,0 +1,6 @@
+{
+  "name": "Tráfego Direto Angola",
+  "description": "Calculadora e Gerador Inteligente de Anúncios e Estratégias de Tráfego Pago focados em Fechamento de Vendas por WhatsApp no Mercado Angolano.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
