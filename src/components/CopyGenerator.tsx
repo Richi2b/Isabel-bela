@@ -79,12 +79,37 @@ export default function CopyGenerator({ onPresetSelected }: CopyGeneratorProps) 
       if (response.ok && result.success) {
         setCurrentStrategy(result.data);
       } else {
-        const errMsg = result.error || "Não foi possível contactar o servidor de IA.";
-        setErrorInfo(
-          errMsg.includes("GEMINI_API_KEY") 
-            ? "Para gerar campanhas sob medida para o seu nicho com Inteligência Artificial, adicione a sua chave de API no painel 'Secrets' do AI Studio. Entretanto, selecionámos a nossa melhor estratégia padrão abaixo!"
-            : `Houve um erro no servidor: ${errMsg}`
-        );
+        const rawErr = result.error || "Não foi possível contactar o servidor de IA.";
+        const errMsg = typeof rawErr === "object" ? JSON.stringify(rawErr) : String(rawErr);
+        
+        let friendlyMsg = "";
+        const lowerErr = errMsg.toLowerCase();
+        
+        if (lowerErr.includes("gemini_api_key") || lowerErr.includes("api key") || lowerErr.includes("api_key") || lowerErr.includes("required to generate")) {
+          friendlyMsg = "Para gerar campanhas sob medida para o seu nicho com Inteligência Artificial, adicione a sua chave de API nos 'Secrets' do AI Studio. Entretanto, selecionámos a nossa melhor estratégia padrão abaixo!";
+        } else if (
+          lowerErr.includes("quota") ||
+          lowerErr.includes("limit") ||
+          lowerErr.includes("exhausted") ||
+          lowerErr.includes("429") ||
+          lowerErr.includes("rate")
+        ) {
+          friendlyMsg = "O limite de pedidos ou a quota da Inteligência Artificial foi atingido temporariamente (Erro 429: Limite de Quota Excedido). Todas as nossas estratégias reais angolanas pré-configuradas continuam 100% ativas! Por favor, selecione qualquer um dos presets testados acima para prosseguir sem qualquer interrupção.";
+        } else if (
+          lowerErr.includes("503") || 
+          lowerErr.includes("unavailable") || 
+          lowerErr.includes("high demand") || 
+          lowerErr.includes("sobrecarga") || 
+          lowerErr.includes("temporary") || 
+          lowerErr.includes("indisponível") ||
+          lowerErr.includes("busy")
+        ) {
+          friendlyMsg = "A Inteligência Artificial do Gemini está a enfrentar uma alta procura temporária (Aviso 503: Modelo Indisponível). As estratégias reais angolanas pré-configuradas continuam 100% ativas! Selecione qualquer um dos nossos presets acima para continuar.";
+        } else {
+          friendlyMsg = `Houve um contratempo ao contactar o servidor de Inteligência Artificial: ${errMsg}. Entretanto, carregámos uma das nossas melhores estratégias comprovadas para o ajudar!`;
+        }
+        
+        setErrorInfo(friendlyMsg);
         
         // Fallback or matched preset selection
         const matchedPreset = ANGOLAN_PRESETS.find(p => 
@@ -98,9 +123,17 @@ export default function CopyGenerator({ onPresetSelected }: CopyGeneratorProps) 
       }
     } catch (err: any) {
       console.error(err);
-      setErrorInfo(
-        "A ligação ao servidor falhou. Ative o GEMINI_API_KEY para campanhas inteligentes personalizadas ou utilize as campanhas reais testadas abaixo."
-      );
+      
+      const errStr = String(err.message || err).toLowerCase();
+      let friendlyMsg = "A ligação ao servidor falhou. Ative o GEMINI_API_KEY para campanhas inteligentes personalizadas ou utilize as campanhas reais testadas abaixo.";
+      
+      if (errStr.includes("quota") || errStr.includes("limit") || errStr.includes("rate") || errStr.includes("429") || errStr.includes("exhausted")) {
+        friendlyMsg = "O limite de pedidos ou a quota da Inteligência Artificial foi atingido temporariamente (Erro 429: Limite de Quota Excedido). Todas as nossas estratégias reais angolanas pré-configuradas continuam 100% ativas! Por favor, selecione qualquer um dos presets testados acima para prosseguir sem qualquer interrupção.";
+      } else if (errStr.includes("503") || errStr.includes("unavailable") || errStr.includes("high demand")) {
+        friendlyMsg = "O serviço de Inteligência Artificial do Gemini está a enfrentar uma alta procura temporária (Aviso 503: Modelo Indisponível). Todas as nossas estratégias locais testadas para Angola continuam 100% disponíveis acima!";
+      }
+      
+      setErrorInfo(friendlyMsg);
     } finally {
       setLoading(false);
     }
@@ -116,15 +149,15 @@ export default function CopyGenerator({ onPresetSelected }: CopyGeneratorProps) 
   return (
     <div className="space-y-6" id="anuncios">
       {/* Selector Tabs or Nav bar styled like Dark Tech elements */}
-      <div className="bg-[#121212] p-1.5 border border-zinc-800 flex gap-2 overflow-x-auto scroller-hide">
+      <div className="bg-[#0e0c20]/60 p-1.5 border border-purple-950/40 flex gap-2 overflow-x-auto scroller-hide">
         {ANGOLAN_PRESETS.map((preset) => (
           <button
             key={preset.id}
             onClick={() => handlePresetChange(preset.id)}
             className={`flex items-center gap-2 px-4 py-3 text-xs font-bold uppercase tracking-wider transition-all shrink-0 ${
               selectedPresetId === preset.id && !loading
-                ? "bg-green-500 text-black"
-                : "text-zinc-400 hover:text-zinc-100 bg-[#161616]"
+                ? "bg-gradient-to-r from-orange-500 to-pink-500 text-white font-black shadow-md shadow-orange-500/10"
+                : "text-zinc-400 hover:text-zinc-100 bg-[#14122d]/40 border border-purple-950/10"
             }`}
           >
             <span>{preset.emoji}</span>
@@ -135,10 +168,10 @@ export default function CopyGenerator({ onPresetSelected }: CopyGeneratorProps) 
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         {/* Custom Niche Creator Input Form */}
-        <div className="lg:col-span-5 bg-[#121212] border border-zinc-800 p-6 space-y-6">
+        <div className="lg:col-span-5 bg-[#0e0c20]/60 border border-purple-950/40 p-6 space-y-6">
           <div>
             <h3 className="font-bold font-display uppercase tracking-tight text-md text-white flex items-center gap-2">
-              <Sparkles className="h-4 w-4 text-green-500" />
+              <Sparkles className="h-4 w-4 text-orange-500" />
               Estratégia sob Medida (IA)
             </h3>
             <p className="text-[11px] text-zinc-400 leading-normal mt-1">
@@ -157,7 +190,7 @@ export default function CopyGenerator({ onPresetSelected }: CopyGeneratorProps) 
                 value={customNiche}
                 required
                 onChange={(e) => setCustomNiche(e.target.value)}
-                className="w-full px-4 py-2.5 bg-[#161616] border border-zinc-800 text-xs text-white focus:outline-none focus:border-green-500"
+                className="w-full px-4 py-2.5 bg-[#14122d] border border-purple-950/40 text-xs text-white focus:outline-none focus:border-orange-500"
               />
             </div>
 
@@ -170,7 +203,7 @@ export default function CopyGenerator({ onPresetSelected }: CopyGeneratorProps) 
                 placeholder="Ex. 25000"
                 value={customPrice}
                 onChange={(e) => setCustomPrice(e.target.value)}
-                className="w-full px-4 py-2.5 bg-[#161616] border border-zinc-800 text-xs text-white focus:outline-none focus:border-green-500"
+                className="w-full px-4 py-2.5 bg-[#14122d] border border-purple-950/40 text-xs text-white focus:outline-none focus:border-orange-500"
               />
             </div>
 
@@ -183,7 +216,7 @@ export default function CopyGenerator({ onPresetSelected }: CopyGeneratorProps) 
                 placeholder="Ex. Universitários, Moradores do Kilamba..."
                 value={customAudience}
                 onChange={(e) => setCustomAudience(e.target.value)}
-                className="w-full px-4 py-2.5 bg-[#161616] border border-zinc-800 text-xs text-white focus:outline-none focus:border-green-500"
+                className="w-full px-4 py-2.5 bg-[#14122d] border border-purple-950/40 text-xs text-white focus:outline-none focus:border-orange-500"
               />
             </div>
 
@@ -196,14 +229,14 @@ export default function CopyGenerator({ onPresetSelected }: CopyGeneratorProps) 
                 placeholder="Ex. Estafeta de moto entrega em mão em Talatona, Maianga ou enviamos via transportadora Real Trans..."
                 value={customFulfillment}
                 onChange={(e) => setCustomFulfillment(e.target.value)}
-                className="w-full px-4 py-3 bg-[#161616] border border-zinc-800 text-xs text-white focus:outline-none focus:border-green-500 resize-none"
+                className="w-full px-4 py-3 bg-[#14122d] border border-purple-950/40 text-xs text-white focus:outline-none focus:border-orange-500 resize-none"
               />
             </div>
 
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-green-500 text-black font-bold uppercase tracking-wider py-3 text-xs hover:bg-green-400 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+              className="w-full bg-gradient-to-r from-orange-500 via-pink-500 to-purple-600 text-white font-bold uppercase tracking-wider py-3 text-xs rounded-sm hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
             >
               {loading ? (
                 <>
@@ -220,8 +253,8 @@ export default function CopyGenerator({ onPresetSelected }: CopyGeneratorProps) 
           </form>
 
           {errorInfo && (
-            <div className="bg-zinc-900 border border-zinc-800 p-4 flex gap-2.5 text-2xs text-zinc-300">
-              <Info className="h-4 w-4 shrink-0 mt-0.5 text-green-500" />
+            <div className="bg-[#100e23] border border-purple-950/30 p-4 flex gap-2.5 text-2xs text-zinc-300">
+              <Info className="h-4 w-4 shrink-0 mt-0.5 text-orange-500" />
               <div>
                 <p className="font-bold text-zinc-100 mb-0.5 uppercase tracking-wider">Modo Demonstração de Presets:</p>
                 {errorInfo}
@@ -233,34 +266,34 @@ export default function CopyGenerator({ onPresetSelected }: CopyGeneratorProps) 
         {/* Dynamic Display of Strategy */}
         <div className="lg:col-span-7 space-y-6">
           {/* Section: Copywriting examples */}
-          <div className="bg-[#121212] border border-zinc-800 p-6 space-y-5">
-            <div className="flex justify-between items-center pb-3 border-b border-zinc-800">
-              <span className="text-xs font-mono tracking-widest text-[#00ff66] font-bold uppercase">
+          <div className="bg-[#0e0c20]/60 border border-purple-950/40 p-6 space-y-5">
+            <div className="flex justify-between items-center pb-3 border-b border-purple-950/20">
+              <span className="text-xs font-mono tracking-widest text-orange-400 font-bold uppercase">
                 {currentStrategy.nicheName}
               </span>
-              <span className="text-[10px] uppercase bg-zinc-900 border border-zinc-800 text-zinc-300 px-3 py-1 font-bold">
+              <span className="text-[10px] uppercase bg-[#14122d] border border-purple-950/30 text-zinc-300 px-3 py-1 font-bold">
                 WhatsApp Direct-To-Sale
               </span>
             </div>
 
             <div className="space-y-4">
               <h4 className="font-bold font-display uppercase tracking-tight text-sm text-white flex items-center gap-2">
-                <Smartphone className="h-4 w-4 text-green-500" />
+                <Smartphone className="h-4 w-4 text-orange-500" />
                 Copys de Anúncio Reais (Prontos a Colar)
               </h4>
 
               {currentStrategy.copyExamples.map((copy: CopywritingResult, idx: number) => {
                 const fullText = `*${copy.headline}*\n\n${copy.hook}\n\n${copy.bodyText}\n\n${copy.callToAction}`;
                 return (
-                  <div key={idx} className="bg-[#161616] border border-zinc-800 p-5 relative group">
+                  <div key={idx} className="bg-[#14122d]/60 border border-purple-950/20 p-5 relative group">
                     <button
                       onClick={() => copyToClipboard(fullText, `copy-${idx}`)}
-                      className="absolute top-4 right-4 bg-[#0d0d0d] hover:bg-[#1f1f1f] text-zinc-400 border border-zinc-800 rounded-sm px-2.5 py-1 transition-all flex items-center gap-1.5 text-3xs font-mono uppercase font-bold"
+                      className="absolute top-4 right-4 bg-[#0a0914] hover:bg-[#1a1735] text-zinc-300 border border-purple-950/30 rounded-sm px-2.5 py-1 transition-all flex items-center gap-1.5 text-3xs font-mono uppercase font-bold"
                     >
                       {copiedTextId === `copy-${idx}` ? (
                         <>
-                          <Check className="h-3 w-3 text-green-400" />
-                          <span className="text-green-400">Copiado!</span>
+                          <Check className="h-3 w-3 text-orange-400" />
+                          <span className="text-orange-400">Copiado!</span>
                         </>
                       ) : (
                         <>
@@ -272,7 +305,7 @@ export default function CopyGenerator({ onPresetSelected }: CopyGeneratorProps) 
 
                     <div className="space-y-3 font-sans pr-24">
                       <div>
-                        <span className="text-3xs uppercase tracking-widest font-mono text-green-500 font-bold">Título do Anúncio</span>
+                        <span className="text-3xs uppercase tracking-widest font-mono text-orange-400 font-bold">Título do Anâncio</span>
                         <p className="text-xs font-bold text-white block mt-0.5 font-display">{copy.headline}</p>
                       </div>
                       <div>
@@ -283,9 +316,9 @@ export default function CopyGenerator({ onPresetSelected }: CopyGeneratorProps) 
                         <span className="text-3xs uppercase tracking-widest font-mono text-zinc-500 font-bold">Informações Legenda</span>
                         <p className="text-xs text-zinc-400 whitespace-pre-line mt-1 font-mono leading-relaxed">{copy.bodyText}</p>
                       </div>
-                      <div className="border-t border-zinc-800 pt-2.5 mt-2">
-                        <span className="text-3xs uppercase tracking-widest font-mono text-[#00ff66] font-bold">Chamada de clique</span>
-                        <p className="text-xs font-bold text-green-400 mt-0.5 font-display">{copy.callToAction}</p>
+                      <div className="border-t border-purple-950/20 pt-2.5 mt-2">
+                        <span className="text-3xs uppercase tracking-widest font-mono text-orange-500 font-bold">Chamada de clique</span>
+                        <p className="text-xs font-bold text-orange-400 mt-0.5 font-display">{copy.callToAction}</p>
                       </div>
                     </div>
                   </div>
@@ -295,40 +328,40 @@ export default function CopyGenerator({ onPresetSelected }: CopyGeneratorProps) 
           </div>
 
           {/* Section: Custom targeting in Facebook Ads manager for Angola */}
-          <div className="bg-[#121212] border border-zinc-800 p-6 space-y-4">
+          <div className="bg-[#0e0c20]/60 border border-purple-950/40 p-6 space-y-4">
             <h4 className="font-bold text-sm font-display uppercase tracking-tight text-white flex items-center gap-2">
-              <Target className="h-4 w-4 text-green-500" />
+              <Target className="h-4 w-4 text-orange-500" />
               Segmentação Exata Recomendada no Meta Ads
             </h4>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="bg-[#161616] p-4 border border-zinc-800">
-                <div className="flex items-center gap-2 text-3xs font-bold text-green-500 font-mono uppercase tracking-wider">
+              <div className="bg-[#14122d] p-4 border border-purple-950/20">
+                <div className="flex items-center gap-2 text-3xs font-bold text-orange-500 font-mono uppercase tracking-wider">
                   <MapPin className="h-3 w-3" /> Locais Selecionados
                 </div>
                 <div className="mt-2 flex flex-wrap gap-1.5">
                   {currentStrategy.targeting.locations.map((loc, i) => (
-                    <span key={i} className="text-3xs bg-zinc-900 border border-zinc-800 text-zinc-300 px-2 py-0.5 font-mono">
+                    <span key={i} className="text-3xs bg-[#0c0a1a] border border-purple-950/30 text-zinc-300 px-2 py-0.5 font-mono">
                       {loc}
                     </span>
                   ))}
                 </div>
               </div>
 
-              <div className="bg-[#161616] p-4 border border-zinc-800">
+              <div className="bg-[#14122d] p-4 border border-purple-950/20">
                 <div className="flex items-center gap-2 text-3xs font-bold text-rose-400 font-mono uppercase tracking-wider">
                   <Layers className="h-3 w-3" /> Excluir do Orçamento
                 </div>
                 <div className="mt-2 flex flex-wrap gap-1.5">
                   {currentStrategy.targeting.exclusions.map((exc, i) => (
-                    <span key={i} className="text-3xs bg-zinc-900 border border-zinc-850 text-rose-300 px-2 py-0.5 font-mono">
+                    <span key={i} className="text-3xs bg-[#0c0a1a] border border-purple-950/30 text-[#fca5a5] px-2 py-0.5 font-mono">
                       {exc}
                     </span>
                   ))}
                 </div>
               </div>
 
-              <div className="bg-[#161616] p-4 border border-zinc-800">
+              <div className="bg-[#14122d] p-4 border border-purple-950/20">
                 <div className="flex items-center gap-2 text-3xs font-bold text-zinc-400 font-mono uppercase tracking-wider">
                   <UserCheck className="h-3 w-3" /> Idade / Géneros
                 </div>
@@ -337,13 +370,13 @@ export default function CopyGenerator({ onPresetSelected }: CopyGeneratorProps) 
                 </p>
               </div>
 
-              <div className="bg-[#161616] p-4 border border-zinc-800">
-                <div className="flex items-center gap-2 text-3xs font-bold text-green-400 font-mono uppercase tracking-wider">
+              <div className="bg-[#14122d] p-4 border border-purple-950/20">
+                <div className="flex items-center gap-2 text-3xs font-bold text-orange-400 font-mono uppercase tracking-wider">
                   <TrendingUp className="h-3 w-3" /> Interesses Práticos
                 </div>
                 <div className="mt-2 flex flex-wrap gap-1.5">
                   {currentStrategy.targeting.interests.map((interest, i) => (
-                    <span key={i} className="text-3xs bg-zinc-900 border border-zinc-850 text-[#00ff66] px-2 py-0.5 font-mono">
+                    <span key={i} className="text-3xs bg-[#0c0a1a] border border-purple-950/30 text-orange-400 px-2 py-0.5 font-mono">
                       {interest}
                     </span>
                   ))}
@@ -351,7 +384,7 @@ export default function CopyGenerator({ onPresetSelected }: CopyGeneratorProps) 
               </div>
             </div>
 
-            <div className="mt-2 pt-3 border-t border-zinc-800 text-xs text-zinc-400 leading-relaxed">
+            <div className="mt-2 pt-3 border-t border-purple-950/20 text-xs text-zinc-400 leading-relaxed">
               <p className="font-bold text-zinc-200">Conselho de Posicionamento:</p>
               {currentStrategy.targeting.placementAdvice}
             </div>
@@ -359,9 +392,9 @@ export default function CopyGenerator({ onPresetSelected }: CopyGeneratorProps) 
 
           {/* Tips and Advice */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="bg-zinc-950 border border-zinc-850 p-5">
-              <h5 className="font-bold text-zinc-100 uppercase font-display text-xs tracking-wider mb-3 flex items-center gap-1.5 border-b border-zinc-800 pb-2">
-                <TrendingUp className="h-4 w-4 text-green-500" />
+            <div className="bg-[#0e0c20]/60 border border-purple-950/40 p-5">
+              <h5 className="font-bold text-zinc-100 uppercase font-display text-xs tracking-wider mb-3 flex items-center gap-1.5 border-b border-purple-950/20 pb-2">
+                <TrendingUp className="h-4 w-4 text-orange-500" />
                 Orçamento de Teste
               </h5>
               <p className="text-xs text-zinc-400 leading-relaxed font-mono">
@@ -369,15 +402,15 @@ export default function CopyGenerator({ onPresetSelected }: CopyGeneratorProps) 
               </p>
             </div>
 
-            <div className="bg-zinc-950 border border-zinc-850 p-5">
-              <h5 className="font-bold text-zinc-100 uppercase font-display text-xs tracking-wider mb-3 flex items-center gap-1.5 border-b border-zinc-800 pb-2">
-                <Sparkles className="h-4 w-4 text-green-500" />
+            <div className="bg-[#0e0c20]/60 border border-purple-950/40 p-5">
+              <h5 className="font-bold text-zinc-100 uppercase font-display text-xs tracking-wider mb-3 flex items-center gap-1.5 border-b border-purple-950/20 pb-2">
+                <Sparkles className="h-4 w-4 text-orange-500" />
                 Gatilhos de Fecho (WhatsApp)
               </h5>
               <ul className="space-y-2 text-xs text-zinc-400 font-mono">
                 {currentStrategy.fastSaleTips.map((tip, idx) => (
                   <li key={idx} className="flex gap-2 items-start">
-                    <span className="bg-green-500/10 text-green-400 border border-green-550 h-4.5 w-4.5 text-3xs flex items-center justify-center shrink-0 mt-0.5 font-bold">
+                    <span className="bg-orange-500/10 text-orange-450 border border-orange-500/20 h-4.5 w-4.5 text-3xs flex items-center justify-center shrink-0 mt-0.5 font-bold">
                       {idx + 1}
                     </span>
                     <span className="font-sans leading-snug">{tip}</span>

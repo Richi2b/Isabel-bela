@@ -29,7 +29,7 @@ export default function BlueprintsList() {
       level: "Iniciante / Baixo Orçamento",
       budget: "2.000 Kz a 4.000 Kz por dia",
       badge: "Venda Imediata",
-      badgeStyle: "bg-green-500/10 text-green-400 border-green-500/25",
+      badgeStyle: "bg-orange-500/10 text-orange-400 border-orange-500/25",
       description: "Ideal para escoar stock rápido de perucas humanas, ténis importados, fardos de roupa ou acessórios em Luanda sem gastar fortuna.",
       steps: [
         "Selecione o objetivo ENGAJAMENTO (Apps de mensagens -> WhatsApp Business) no gerenciador de anúncios.",
@@ -50,7 +50,7 @@ export default function BlueprintsList() {
       level: "Médio / Escala de Serviços",
       budget: "5.000 Kz a 10.000 Kz por dia",
       badge: "Clientes Qualificados",
-      badgeStyle: "bg-emerald-500/10 text-emerald-300 border-emerald-500/20",
+      badgeStyle: "bg-purple-500/10 text-purple-300 border-purple-500/20",
       description: "Para prestadores de serviços de alto padrão (limpeza de ar condicionado, eletricistas, vistorias prediais ou arquitetura de interiores).",
       steps: [
         "Utilize o objetivo de mensagens ou obtenção de leads focado no WhatsApp Comercial.",
@@ -71,7 +71,7 @@ export default function BlueprintsList() {
       level: "Avançado / Expansão Provincial",
       budget: "15.000 Kz+ por dia",
       badge: "Lotes e Fardos",
-      badgeStyle: "bg-amber-500/10 text-amber-300 border-amber-500/20",
+      badgeStyle: "bg-pink-550/10 text-pink-400 border-pink-500/20",
       description: "Para grossistas de roupas de fardo, revenda de calçado ou stock massivo que queiram alcançar lojistas em Benguela, Huambo, Lubango e Cabinda.",
       steps: [
         "Crie campanha sob modelo CBO (Distribuição automática pela Meta) direcionando orçamentos maiores.",
@@ -90,9 +90,9 @@ export default function BlueprintsList() {
   ];
 
   return (
-    <div className="bg-[#121212] border border-zinc-800 p-6 lg:p-8 space-y-6" id="casos">
-      <div className="flex items-center gap-3 pb-4 border-b border-zinc-800">
-        <BookOpen className="h-5 w-5 text-green-500" />
+    <div className="bg-[#0e0c20]/60 border border-purple-950/40 p-6 lg:p-8 space-y-6" id="casos">
+      <div className="flex items-center gap-3 pb-4 border-b border-purple-950/20">
+        <BookOpen className="h-5 w-5 text-orange-500" />
         <div>
           <h3 className="text-lg font-bold font-display uppercase tracking-tight text-white">
             Roteiros de Campanhas Reais (Sem Rodeios)
@@ -105,7 +105,7 @@ export default function BlueprintsList() {
 
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
         {blueprints.map((bp, i) => (
-          <div key={i} className="border border-zinc-800 p-6 flex flex-col justify-between bg-[#141414]">
+          <div key={i} className="border border-purple-950/20 p-6 flex flex-col justify-between bg-[#14122d]/60">
             <div className="space-y-4">
               <div className="flex justify-between items-start gap-2">
                 <span className="text-3xs font-mono font-bold text-zinc-500 uppercase tracking-widest block">
@@ -120,7 +120,7 @@ export default function BlueprintsList() {
                 {bp.title}
               </h4>
 
-              <div className="bg-[#181818] px-3 py-2 border border-zinc-800 text-xs text-green-400 font-mono font-bold">
+              <div className="bg-[#1b173c]/80 px-3 py-2 border border-purple-950/25 text-xs text-orange-400 font-mono font-bold">
                 Orçamento: {bp.budget}
               </div>
 
@@ -133,8 +133,8 @@ export default function BlueprintsList() {
                 <span className="text-3xs uppercase font-mono tracking-widest font-bold text-zinc-500 block">Roteiro de Execução</span>
                 <div className="space-y-2.5 mt-1">
                   {bp.steps.map((step, idx) => (
-                    <div key={idx} className="flex gap-2 text-xs text-zinc-350 leading-relaxed items-start">
-                      <span className="text-green-500 font-bold shrink-0 font-mono text-[10px]">[{idx + 1}]</span>
+                    <div key={idx} className="flex gap-2 text-xs text-zinc-300 leading-relaxed items-start">
+                      <span className="text-orange-500 font-bold shrink-0 font-mono text-[10px]">[{idx + 1}]</span>
                       <span className="font-sans text-[11px] font-medium">{step}</span>
                     </div>
                   ))}
@@ -143,7 +143,7 @@ export default function BlueprintsList() {
             </div>
 
             {/* Campaign Meta Setup */}
-            <div className="mt-6 border-t border-zinc-800 pt-4 bg-[#111] p-4 rounded-none space-y-2">
+            <div className="mt-6 border-t border-purple-950/20 pt-4 bg-[#0a0818]/60 p-4 rounded-none space-y-2">
               <span className="text-3xs uppercase font-mono tracking-widest font-bold text-zinc-500 block mb-1">
                 Ficha Técnica do Meta Ads
               </span>
@@ -163,7 +163,7 @@ export default function BlueprintsList() {
                 </div>
                 <div>
                   <span className="text-zinc-500 font-medium block">Interesses</span>
-                  <span className="font-bold text-[#00ff66] line-clamp-1">{bp.metaConfig.interests}</span>
+                  <span className="font-bold text-orange-400 line-clamp-1">{bp.metaConfig.interests}</span>
                 </div>
               </div>
             </div>

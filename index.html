@@ -4,6 +4,37 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Tráfego Direto Angola — Máquina de Vendas no WhatsApp</title>
+    <script>
+      // Prevent benign sandbox proxy connection / WebSocket warnings from triggering unhandled rejection overlays or console logs
+      window.addEventListener('unhandledrejection', function(event) {
+        var reason = event.reason;
+        var msg = '';
+        if (reason) {
+          if (typeof reason === 'string') {
+            msg = reason;
+          } else {
+            msg = (reason.message || '') + ' ' + (reason.stack || '') + ' ' + String(reason);
+          }
+        }
+        if (msg && (msg.toLowerCase().includes('websocket') || msg.toLowerCase().includes('vite') || msg.toLowerCase().includes('closed without opened'))) {
+          event.preventDefault();
+          if (event.stopImmediatePropagation) event.stopImmediatePropagation();
+          event.stopPropagation();
+        }
+      });
+      window.addEventListener('error', function(event) {
+        var msg = event.message || '';
+        var error = event.error;
+        if (error) {
+          msg += ' ' + (error.message || '') + ' ' + (error.stack || '') + ' ' + String(error);
+        }
+        if (msg && (msg.toLowerCase().includes('websocket') || msg.toLowerCase().includes('vite') || msg.toLowerCase().includes('closed without opened'))) {
+          event.preventDefault();
+          if (event.stopImmediatePropagation) event.stopImmediatePropagation();
+          event.stopPropagation();
+        }
+      }, true);
+    </script>
   </head>
   <body>
     <div id="root"></div>

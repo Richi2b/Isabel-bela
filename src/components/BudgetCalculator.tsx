@@ -47,11 +47,11 @@ export default function BudgetCalculator({
   };
 
   return (
-    <div className="bg-[#121212] rounded-none border border-zinc-800 overflow-hidden" id="simulador">
+    <div className="bg-[#0e0c20]/60 rounded-none border border-purple-950/40 overflow-hidden" id="simulador">
       {/* Header Banner */}
-      <div className="bg-[#181818] border-b border-zinc-800 p-6 flex items-center justify-between">
+      <div className="bg-[#131128] border-b border-purple-950/40 p-6 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <Calculator className="h-5 w-5 text-green-500" />
+          <Calculator className="h-5 w-5 text-orange-500" />
           <h3 className="text-lg font-bold font-display uppercase tracking-tight text-white">
             Simulador de Tráfego & ROI (Kwanzas - AOA)
           </h3>
@@ -64,17 +64,17 @@ export default function BudgetCalculator({
       <div className="p-6 lg:p-8 grid grid-cols-1 lg:grid-cols-12 gap-8">
         {/* Controls Column */}
         <div className="lg:col-span-7 space-y-6">
-          <h4 className="text-xs font-mono uppercase tracking-widest text-[#00ff66] font-bold">
+          <h4 className="text-xs font-mono uppercase tracking-widest text-orange-500 font-bold">
             Parâmetros das Campanhas
           </h4>
 
           {/* Daily Budget */}
-          <div className="space-y-2 bg-[#161616] p-4 border border-zinc-850">
+          <div className="space-y-2 bg-[#14122d] p-4 border border-purple-950/20">
             <div className="flex justify-between items-center text-sm">
               <label className="font-semibold text-zinc-300 flex items-center gap-1.5">
-                <DollarSign className="h-4 w-4 text-green-500" /> Orçamento Diário (Meta Ads)
+                <DollarSign className="h-4 w-4 text-orange-500" /> Orçamento Diário (Meta Ads)
               </label>
-              <span className="font-bold text-green-400 font-mono text-sm">{formatKwanza(dailyBudget)} / dia</span>
+              <span className="font-bold text-orange-400 font-mono text-sm">{formatKwanza(dailyBudget)} / dia</span>
             </div>
             <input
               type="range"
@@ -83,9 +83,9 @@ export default function BudgetCalculator({
               step="500"
               value={dailyBudget}
               onChange={(e) => setDailyBudget(Number(e.target.value))}
-              className="w-full h-1 bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-green-500"
+              className="w-full h-1 bg-[#252148] rounded-lg appearance-none cursor-pointer accent-orange-500"
             />
-            <div className="flex justify-between text-4xs text-zinc-500 font-mono">
+            <div className="flex justify-between text-4xs text-zinc-400 font-mono">
               <span>1.000 Kz</span>
               <span>15.000 Kz</span>
               <span>30.000 Kz</span>
@@ -94,12 +94,12 @@ export default function BudgetCalculator({
           </div>
 
           {/* Cost Per WhatsApp Chat initiated (CPC) */}
-          <div className="space-y-2 bg-[#161616] p-4 border border-zinc-850">
+          <div className="space-y-2 bg-[#14122d] p-4 border border-purple-950/20">
             <div className="flex justify-between items-center text-sm">
               <label className="font-semibold text-zinc-300 flex items-center gap-1.5">
-                <MessageCircle className="h-4 w-4 text-green-500" /> Custo por conversa iniciada (Kz)
+                <MessageCircle className="h-4 w-4 text-[#a855f7]" /> Custo por conversa iniciada (Kz)
               </label>
-              <span className="font-bold text-green-400 font-mono text-sm">{formatKwanza(cpc)}</span>
+              <span className="font-bold text-[#a855f7] font-mono text-sm">{formatKwanza(cpc)}</span>
             </div>
             <input
               type="range"
@@ -108,9 +108,9 @@ export default function BudgetCalculator({
               step="5"
               value={cpc}
               onChange={(e) => setCpc(Number(e.target.value))}
-              className="w-full h-1 bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-green-500"
+              className="w-full h-1 bg-[#252148] rounded-lg appearance-none cursor-pointer accent-orange-500"
             />
-            <div className="flex justify-between text-4xs text-zinc-500 font-mono">
+            <div className="flex justify-between text-4xs text-zinc-400 font-mono">
               <span>30 Kz (Fluido)</span>
               <span>150 Kz (Padrão)</span>
               <span>300 Kz</span>
@@ -119,12 +119,12 @@ export default function BudgetCalculator({
           </div>
 
           {/* Close Rate */}
-          <div className="space-y-2 bg-[#161616] p-4 border border-zinc-850">
+          <div className="space-y-2 bg-[#14122d] p-4 border border-purple-950/20">
             <div className="flex justify-between items-center text-sm">
               <label className="font-semibold text-zinc-300 flex items-center gap-1.5">
-                <TrendingUp className="h-4 w-4 text-green-500" /> Taxa de Fechamento no WhatsApp (%)
+                <TrendingUp className="h-4 w-4 text-orange-500" /> Taxa de Fechamento no WhatsApp (%)
               </label>
-              <span className="font-bold text-green-400 font-mono text-sm">{closeRate}% das conversas</span>
+              <span className="font-bold text-orange-400 font-mono text-sm">{closeRate}% das conversas</span>
             </div>
             <input
               type="range"
@@ -133,9 +133,9 @@ export default function BudgetCalculator({
               step="1"
               value={closeRate}
               onChange={(e) => setCloseRate(Number(e.target.value))}
-              className="w-full h-1 bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-green-500"
+              className="w-full h-1 bg-[#252148] rounded-lg appearance-none cursor-pointer accent-orange-500"
             />
-            <div className="flex justify-between text-4xs text-zinc-500 font-mono">
+            <div className="flex justify-between text-4xs text-zinc-400 font-mono">
               <span>2% (Apenas texto)</span>
               <span>12% (WhatsApp Business + Áudios)</span>
               <span>25% (Estilo Humanizado)</span>
@@ -144,12 +144,12 @@ export default function BudgetCalculator({
           </div>
 
           {/* Average Order Value (AOV) */}
-          <div className="space-y-2 bg-[#161616] p-4 border border-zinc-850">
+          <div className="space-y-2 bg-[#14122d] p-4 border border-purple-950/20">
             <div className="flex justify-between items-center text-sm">
               <label className="font-semibold text-zinc-300 flex items-center gap-1.5">
-                <ShoppingBag className="h-4 w-4 text-green-500" /> Ticket Médio de Venda (AOV - Preço)
+                <ShoppingBag className="h-4 w-4 text-orange-500" /> Ticket Médio de Venda (AOV - Preço)
               </label>
-              <span className="font-bold text-green-400 font-mono text-sm">{formatKwanza(aov)}</span>
+              <span className="font-bold text-orange-400 font-mono text-sm">{formatKwanza(aov)}</span>
             </div>
             <input
               type="range"
@@ -158,9 +158,9 @@ export default function BudgetCalculator({
               step="1000"
               value={aov}
               onChange={(e) => setAov(Number(e.target.value))}
-              className="w-full h-1 bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-green-500"
+              className="w-full h-1 bg-[#252148] rounded-lg appearance-none cursor-pointer accent-orange-500"
             />
-            <div className="flex justify-between text-4xs text-zinc-500 font-mono">
+            <div className="flex justify-between text-4xs text-zinc-400 font-mono">
               <span>2.000 Kz (Gigas)</span>
               <span>45.000 Kz (Peruca Média)</span>
               <span>90.000 Kz</span>
@@ -168,8 +168,8 @@ export default function BudgetCalculator({
             </div>
           </div>
 
-          <div className="bg-[#161616]/70 border border-zinc-800 p-4 flex gap-3 text-xs leading-relaxed text-zinc-400">
-            <Sparkles className="h-5 w-5 text-green-500 shrink-0 mt-0.5" />
+          <div className="bg-[#14122d]/70 border border-purple-950/30 p-4 flex gap-3 text-xs leading-relaxed text-zinc-400">
+            <Sparkles className="h-5 w-5 text-orange-500 shrink-0 mt-0.5" />
             <div>
               <p className="font-bold text-zinc-200 mb-1">Nota Real de Conversão em Angola:</p>
               Em Luanda, se o seu custo por mensagem iniciada no WhatsApp ultrapassar <strong className="text-white">250 Kz</strong>, pare as campanhas na hora. Isso indica que a foto do produto ou a chamada principal do anúncio está fraca ou confusa. Refine a oferta!

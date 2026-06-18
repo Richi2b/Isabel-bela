@@ -145,9 +145,42 @@ Crie duas opções de copys de alta conversão com Headlines chamativas, Hooks f
 
   } catch (error: any) {
     console.error("AI Generation Error:", error);
+    
+    let dbgMsg = "";
+    if (error && typeof error === "object") {
+      dbgMsg = error.message || JSON.stringify(error);
+    } else {
+      dbgMsg = String(error);
+    }
+
+    let friendlyError = "Ocorreu um erro desconhecido ao processar a estratégia de tráfego pago.";
+    
+    const lowerDbg = dbgMsg.toLowerCase();
+    if (
+      lowerDbg.includes("quota") ||
+      lowerDbg.includes("limit") ||
+      lowerDbg.includes("exhausted") ||
+      lowerDbg.includes("429") ||
+      lowerDbg.includes("rate")
+    ) {
+      friendlyError = "O limite de pedidos ou a quota da Inteligência Artificial foi atingido temporariamente (Erro 429: Limite de Quota Excedido). As estratégias reais angolanas pré-configuradas continuam 100% ativas! Por favor, selecione qualquer um dos nossos presets testados no topo para prosseguir sem interrupções.";
+    } else if (
+      dbgMsg.includes("503") || 
+      dbgMsg.includes("UNAVAILABLE") || 
+      dbgMsg.includes("high demand") || 
+      dbgMsg.includes("temporary") ||
+      dbgMsg.includes("overloaded")
+    ) {
+      friendlyError = "O serviço do Gemini está com alta procura (Aviso 503: Modelo Temporariamente Indisponível). As estratégias reais continuam 100% funcionais acima.";
+    } else if (dbgMsg.includes("GEMINI_API_KEY") || dbgMsg.includes("API key")) {
+      friendlyError = "GEMINI_API_KEY não configurada. Ative a chave nos Secrets para campanhas personalizadas.";
+    } else {
+      friendlyError = dbgMsg;
+    }
+
     return res.status(500).json({
       success: false,
-      error: error.message || "Erro desconhecido ao processar a estratégia de tráfego pago."
+      error: friendlyError
     });
   }
 });
@@ -156,7 +189,10 @@ Crie duas opções de copys de alta conversão com Headlines chamativas, Hooks f
 async function bootstrap() {
   if (process.env.NODE_ENV !== "production") {
     const vite = await createViteServer({
-      server: { middlewareMode: true },
+      server: { 
+        middlewareMode: true,
+        hmr: false,
+      },
       appType: "spa",
     });
     app.use(vite.middlewares);
